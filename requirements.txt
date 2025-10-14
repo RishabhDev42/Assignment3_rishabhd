@@ -1,3 +1,8 @@
+protobuf
+pydantic
+asyncpg
+python-dotenv
+sqlalchemy
 yt-dlp
 fastapi
 uvicorn[standard]
@@ -20,3 +25,4 @@ openai
 yt_dlp
 requests
 pysrt
+google-genai
