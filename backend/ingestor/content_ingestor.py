@@ -1,12 +1,10 @@
 import os
 
-import yt_dlp
 from langchain.schema import Document
-from langchain_community.document_loaders import PyPDFLoader, SRTLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, MilvusClient
-import requests
 
 
 class ContentIngestor:
@@ -63,52 +61,6 @@ class ContentIngestor:
         """Splits documents into smaller chunks."""
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
         return text_splitter.split_documents(docs)
-
-    # def ingest_youtube_video(self, youtube_url: str):
-    #     """Loads, chunks, embeds, and indexes a YouTube video."""
-    #     try:
-    #         print(f"Ingesting YouTube video: {youtube_url}")
-    #         ydl_opts = {
-    #             "writesubtitles": True,
-    #             "writeautomaticsub": True,
-    #             "skip_download": True,
-    #             "subtitleslangs": ["en"]
-    #         }
-    #         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    #             info = ydl.extract_info(youtube_url, download=False)
-    #             subtitles = info.get("automatic_captions", {}).get("en") or info.get("subtitles", {}).get("en")
-    #             if not subtitles:
-    #                 print("No transcript found.")
-    #                 return 0
-    #             # Download the subtitle file
-    #             subtitle_url = subtitles[0]["url"]
-    #             srt_text = requests.get(subtitle_url).text
-    #             # Parse SRT to plain text
-    #             from langchain_community.document_loaders import SRTLoader
-    #             docs = SRTLoader(srt_text).load()
-    #
-    #         chunks = self._chunk_documents(docs)
-    #         print(f"Split video into {len(chunks)} chunks.")
-    #
-    #         # Prepare data for Milvus
-    #         data_to_insert = []
-    #         for i, chunk in enumerate(chunks):
-    #             embedding = self.embedding_model.embed_query(chunk.page_content)
-    #             data_to_insert.append({
-    #                 "passage": chunk.page_content,
-    #                 "source_type": "youtube",
-    #                 "source_identifier": youtube_url,
-    #                 "chunk_seq_id": i,
-    #                 "embedding": embedding
-    #             })
-    #
-    #         self.collection.insert(data_to_insert)
-    #         self.collection.flush()  # Ensure data is written to disk
-    #         print(f"✅ Successfully ingested {len(data_to_insert)} chunks from YouTube video.")
-    #         return len(data_to_insert)
-    #     except Exception as e:
-    #         print(f"Error ingesting YouTube video: {e}")
-    #         return 0
 
     def ingest_text(self, text: str, source_identifier: str = "manual_text"):
         """Chunks, embeds, and indexes pasted text."""

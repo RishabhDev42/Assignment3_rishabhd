@@ -19,6 +19,11 @@ from backend import assessment_router
 
 # This section runs once when the app starts
 dotenv.load_dotenv()
+
+# Initialize our ingestor
+# This creates a single instance that lives as long as the API server is running
+ingestor = ContentIngestor()
+
 # Connect to Milvus
 client = MilvusClient()
 connections.connect()
@@ -63,33 +68,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize our ingestor
-# This creates a single instance that lives as long as the API server is running
-ingestor = ContentIngestor()
-
 # Create a temporary directory for file uploads
 UPLOAD_DIR = "temp_uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
-# class YouTubeRequest(BaseModel):
-#     url: str
-
-# @app.post("/ingest-youtube/")
-# async def ingest_youtube(request: YouTubeRequest):
-#     """Endpoint to ingest a YouTube video from its URL."""
-#     if not request.url:
-#         raise HTTPException(status_code=400, detail="YouTube URL is required.")
-#
-#     try:
-#         chunks_ingested = ingestor.ingest_youtube_video(request.url)
-#     except Exception as e:
-#         raise HTTPException(status_code=400, detail=f"Error ingesting YouTube video: {str(e)}")
-#
-#     if chunks_ingested > 0:
-#         return {"status": "success", "chunks_ingested": chunks_ingested, "source": request.url}
-#     else:
-#         raise HTTPException(status_code=500, detail="Failed to ingest YouTube video.")
 
 class TextIngestRequest(BaseModel):
     text: str
