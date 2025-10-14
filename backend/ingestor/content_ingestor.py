@@ -52,7 +52,6 @@ class ContentIngestor:
                 self.collection.create_index(field_name="embedding", index_params=index_params)
                 print(f"✅ Index for 'embedding' field created.")
             print(f"✅ Collection '{self.collection_name}' already exists.")
-            print(f"✅ Collection '{self.collection_name}' already exists.")
 
         # Load the collection into memory for searching
         self.collection.load()
